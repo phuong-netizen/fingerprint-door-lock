@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Door Lock Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --surface-2: #f8f9fa;
+  --border: #e4e6ea;
+  --text: #1c1e21;
+  --muted: #65676b;
+  --accent: #1877f2;
+  --accent-light: #e7f0ff;
+  --green: #1a7f4b;
+  --green-bg: #e6f4ed;
+  --green-border: #b7dfca;
+  --red: #c0392b;
+  --red-bg: #fdecea;
+  --red-border: #f5c6c2;
+  --amber: #9a5000;
+  --amber-bg: #fff4e5;
+  --amber-border: #ffd9a0;
+  --blue: #1565c0;
+  --blue-bg: #e8f0fe;
+  --blue-border: #b3cef8;
+  --purple: #5e35b1;
+  --purple-bg: #ede7f6;
+  --purple-border: #c5b0e8;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* TOPBAR */
+/* Tùy chỉnh Header bự hơn và căn giữa */
+/* Tùy chỉnh Header bự và linh hoạt cho Banner trường */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 30px; 
+  height: 110px; /* Tăng thêm một chút để thoải mái chèn ảnh */
+  display: grid;
+  grid-template-columns: 300px 1fr 300px; /* Cố định 2 bên để phần giữa luôn cân đối */
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+
+/* Khu vực chứa ảnh Logo + Tên trường */
+.school-banner {
+  display: flex;
+  align-items: center;
+  height: 80%; /* Để ảnh không chạm sát mép trên dưới */
+}
+
+.school-banner img {
+  max-height: 120px; /* Giới hạn chiều cao ảnh */
+  width: auto;      /* Giữ tỉ lệ ảnh gốc */
+  object-fit: contain;
+}
+
+/* Đưa nội dung hệ thống ra giữa */
+.brand-text-center {
+  text-align: center;
+}
+
+.brand-name {
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.brand-sub {
+  font-size: 14px;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.topbar-right { 
+  display: flex; 
+  align-items: center; 
+  gap: 15px; 
+  justify-content: flex-end; 
+}
+
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  padding: 5px 12px; border-radius: 20px;
+}
+.status-pill.online  { color: var(--green); background: var(--green-bg); border: 1px solid var(--green-border); }
+.status-pill.offline { color: var(--red);   background: var(--red-bg);   border: 1px solid var(--red-border); }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.status-dot.pulse { animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+/* CONTENT */
+.content { padding: 24px 28px; }
+
+/* GRID */
+.grid { display: grid; grid-template-columns: 240px 1fr; gap: 18px; align-items: start; }
+.left-col { display: flex; flex-direction: column; gap: 12px; }
+.right-col { display: flex; flex-direction: column; gap: 16px; }
+
+/* STAT CARD */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.stat-label {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--muted); margin-bottom: 10px;
+}
+.stat-value {
+  font-family: var(--mono);
+  font-size: 36px; font-weight: 600; line-height: 1;
+  color: var(--text);
+}
+.stat-breakdown {
+  display: flex; gap: 12px;
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.stat-chip {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--muted);
+}
+.stat-chip strong { color: var(--text); font-weight: 600; font-family: var(--mono); }
+
+/* DOOR CARD */
+.door-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.door-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 4px; }
+.door-state { font-family: var(--mono); font-size: 16px; font-weight: 600; }
+.door-state.open   { color: var(--green); }
+.door-state.locked { color: var(--muted); }
+.door-badge {
+  width: 40px; height: 40px; border-radius: var(--radius);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  transition: all .3s;
+}
+.door-badge.open   { background: var(--green-bg); }
+.door-badge.locked { background: var(--bg); }
+
+/* RTC CARD */
+.rtc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  box-shadow: var(--shadow);
+}
+.rtc-volt { font-family: var(--mono); font-size: 22px; font-weight: 600; margin: 4px 0 2px; }
+.rtc-status { font-size: 11px; color: var(--muted); }
+
+/* LAST SEEN */
+.lastseen-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  box-shadow: var(--shadow);
+  font-size: 11px; color: var(--muted);
+  font-family: var(--mono);
+}
+.lastseen-card span { color: var(--text); font-weight: 500; }
+
+/* CARD */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface);
+}
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.card-badge {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  padding: 3px 9px; border-radius: 20px;
+  background: var(--accent-light); color: var(--accent);
+}
+
+/* TABS */
+.tabs-bar {
+  display: flex; gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+.tab-btn {
+  flex: 1;
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  padding: 7px 16px; border-radius: var(--radius-sm);
+  border: none; background: transparent;
+  color: var(--muted); cursor: pointer;
+  transition: all .2s;
+}
+.tab-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); font-weight: 600; }
+.tab-btn:hover:not(.active) { color: var(--text); background: rgba(255,255,255,.5); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* SEARCH */
+.search-wrap {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.search-input {
+  width: 100%; font-family: var(--sans); font-size: 13px;
+  padding: 7px 12px; border: 1px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--surface);
+  color: var(--text); outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(24,119,242,.1); }
+.search-input::placeholder { color: var(--muted); }
+
+/* TABLES */
+.id-table, .log-table { width: 100%; border-collapse: collapse; }
+.id-table th, .log-table th {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--muted); padding: 10px 20px;
+  text-align: left; background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.id-table td, .log-table td {
+  padding: 11px 20px; border-bottom: 1px solid var(--border);
+  font-size: 13px; vertical-align: middle;
+}
+.id-table tr:last-child td, .log-table tr:last-child td { border-bottom: none; }
+.id-table tbody tr:hover td, .log-table tbody tr:hover td { background: var(--surface-2); }
+
+/* TAGS */
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 4px; letter-spacing: .03em;
+}
+.tag-staff  { background: var(--blue-bg);   color: var(--blue);   border: 1px solid var(--blue-border); }
+.tag-client { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-border); }
+.tag-admin  { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+
+/* PILLS */
+.pill {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 4px;
+}
+.pill-ok   { background: var(--green-bg);  color: var(--green); border: 1px solid var(--green-border); }
+.pill-fail { background: var(--red-bg);    color: var(--red);   border: 1px solid var(--red-border); }
+.pill-warn { background: var(--amber-bg);  color: var(--amber); border: 1px solid var(--amber-border); }
+.pill-exp  { background: var(--red-bg);    color: var(--red);   border: 1px solid var(--red-border); }
+
+.expired-row td { opacity: .45; }
+
+.mono { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+.empty { padding: 32px 20px; text-align: center; color: var(--muted); font-size: 13px; }
+
+.scroll-body { max-height: 440px; overflow-y: auto; }
+.scroll-body::-webkit-scrollbar { width: 4px; }
+.scroll-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* TOGGLE MORE */
+.toggle-more {
+  padding: 10px 20px; text-align: center;
+  color: var(--accent); font-size: 12px; font-weight: 600;
+  cursor: pointer; border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  transition: background .15s;
+}
+.toggle-more:hover { background: var(--accent-light); }
+
+/* FLASH */
+@keyframes flash { 0%{background:#fff9c4} 100%{background:transparent} }
+.row-new td { animation: flash 1.5s ease forwards; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="school-banner">
+    <img src="logotruong.png" alt="School Logo and Name">
+  </div>
+
+  <div class="brand-text-center">
+    <div class="brand-name">DOOR LOCK</div>
+    <div class="brand-sub">Fingerprint Access System</div>
+  </div>
+
+  <div class="topbar-right">
+    <span class="clock" id="clock">--:--:--</span>
+    <span class="status-pill offline" id="conn-pill">
+      <span class="status-dot" id="conn-dot"></span>
+      <span id="conn-text">OFFLINE</span>
+    </span>
+  </div>
+</nav>
+
+<div class="content">
+<div class="grid">
+
+  <!-- LEFT -->
+  <div class="left-col">
+
+    <div class="stat-card">
+      <div class="stat-label">Tổng ID đăng ký</div>
+      <div class="stat-value" id="total-id">0</div>
+      <div class="stat-breakdown">
+        <div class="stat-chip">Admin <strong id="cnt-admin">0</strong></div>
+        <div class="stat-chip">Staff <strong id="cnt-staff">0</strong></div>
+        <div class="stat-chip">Client <strong id="cnt-client">0</strong></div>
+      </div>
+    </div>
+
+    <div class="door-card">
+      <div>
+        <div class="door-label">Trạng thái cửa</div>
+        <div class="door-state locked" id="door-state">LOCKED</div>
+      </div>
+      <div class="door-badge locked" id="door-icon">🔒</div>
+    </div>
+
+    <div class="rtc-card">
+      <div class="stat-label">Pin RTC</div>
+      <div class="rtc-volt" id="rtc-volt">-- V</div>
+      <div class="rtc-status" id="rtc-status">--</div>
+    </div>
+
+    <div class="lastseen-card">
+      Cập nhật lúc<br><span id="last-seen">--</span>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+
+    <div class="tabs-bar">
+      <button class="tab-btn active" onclick="openTab(event, 'tab-ids')">
+        <i data-feather="users" style="width:13px;height:13px;vertical-align:middle;margin-right:5px"></i>Danh sách ID
+      </button>
+      <button class="tab-btn" onclick="openTab(event, 'tab-logs')">
+        <i data-feather="clock" style="width:13px;height:13px;vertical-align:middle;margin-right:5px"></i>Lịch sử mở cửa
+      </button>
+    </div>
+
+    <div id="tab-ids" class="tab-content active">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Danh sách ID đã đăng ký</span>
+          <span class="card-badge" id="id-badge">0 ID</span>
+        </div>
+        <div class="search-wrap">
+          <input type="text" id="search-id" class="search-input" placeholder="Tìm theo ID, loại, trạng thái..." onkeyup="renderIDs()">
+        </div>
+        <div class="scroll-body">
+          <table class="id-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Loại</th>
+                <th>Thông tin</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="id-body">
+              <tr><td colspan="4" class="empty">Chưa có dữ liệu…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-logs" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Lịch sử mở cửa</span>
+          <span class="card-badge" id="log-badge">0 lượt</span>
+        </div>
+        <div class="scroll-body">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Thời gian</th>
+                <th>Đối tượng</th>
+                <th>ID</th>
+                <th>Kết quả</th>
+              </tr>
+            </thead>
+            <tbody id="log-body">
+              <tr><td colspan="4" class="empty">Chưa có lịch sử…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const FIREBASE_URL = "https://doan1-4673b-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+// Clock
+setInterval(() => {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('vi-VN');
+}, 1000);
+
+// Connection
+function setConn(online, lastSeen) {
+  const pill = document.getElementById('conn-pill');
+  const dot  = document.getElementById('conn-dot');
+  pill.className = 'status-pill ' + (online ? 'online' : 'offline');
+  dot.className  = 'status-dot'  + (online ? ' pulse' : '');
+  document.getElementById('conn-text').textContent = online ? 'ONLINE' : 'OFFLINE';
+  if (lastSeen) document.getElementById('last-seen').textContent = lastSeen;
+}
+
+// Door
+function setDoor(open) {
+  const state = document.getElementById('door-state');
+  const icon  = document.getElementById('door-icon');
+  if (open) {
+    state.textContent = 'OPEN'; state.className = 'door-state open';
+    icon.className = 'door-badge open';
+    icon.innerHTML = '<i data-feather="unlock" style="width:18px;height:18px;color:var(--green);stroke-width:2"></i>';
+    feather.replace();
+    setTimeout(() => setDoor(false), 4000);
+  } else {
+    state.textContent = 'LOCKED'; state.className = 'door-state locked';
+    icon.className = 'door-badge locked';
+    icon.innerHTML = '<i data-feather="lock" style="width:18px;height:18px;color:var(--muted);stroke-width:2"></i>';
+    feather.replace();
+  }
+}
+
+// Render IDs
+let idData = {};
+// Render IDs (CÓ Ô TÌM KIẾM)
+function renderIDs() {
+  const tbody = document.getElementById('id-body');
+  const keys = Object.keys(idData).map(Number).sort((a,b) => a-b);
+  
+  // Lấy từ khóa tìm kiếm (chuyển về chữ thường để dễ so sánh)
+  const searchTerm = (document.getElementById('search-id')?.value || '').toLowerCase();
+
+  if (!keys.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty">Chưa có ID nào…</td></tr>';
+    ['total-id','cnt-admin','cnt-staff','cnt-client'].forEach(id => document.getElementById(id).textContent = '0');
+    document.getElementById('id-badge').textContent = '0 ID';
+    return;
+  }
+
+  let cA=0, cS=0, cC=0;
+  let rowsHtml = '';
+  let visibleCount = 0; // Đếm số lượng hiển thị sau khi lọc
+
+  keys.forEach(id => {
+    const d = idData[id];
+    const t = d.type || 'UNKNOWN';
+    if (t==='ADMIN') cA++; if (t==='STAFF') cS++; if (t==='CLIENT') cC++;
+    const tagCls = t==='STAFF' ? 'tag-staff' : t==='CLIENT' ? 'tag-client' : 'tag-admin';
+
+    let info='--', pill='';
+    let statusText = ''; // Phục vụ việc tìm kiếm
+
+    if (t==='STAFF') {
+      info = `Ca ${d.shiftStart}h – ${d.shiftEnd}h`;
+      pill = `<span class="pill pill-ok">Hoạt động</span>`;
+      statusText = 'hoat dong';
+    } else if (t==='CLIENT') {
+        const fmt = ts => {
+          if (!ts) return '--';
+          return new Date((ts - 7 * 3600) * 1000).toLocaleString('vi-VN', {
+            day: '2-digit', month: '2-digit', year: '2-digit',
+            hour: '2-digit', minute: '2-digit', hour12: false
+          });
+        };
+  info = `${fmt(d.start)} → ${fmt(d.end)}`;
+  const expired = Date.now() > (d.end * 1000);         // tính trực tiếp
+  pill = expired ? `<span class="pill pill-exp">Hết hạn</span>` : `<span class="pill pill-ok">Còn hạn</span>`;
+  statusText = expired ? 'het han' : 'con han';
+    } else {
+      info = 'Quản trị viên';
+      pill = `<span class="pill pill-ok">Hoạt động</span>`;
+      statusText = 'hoat dong';
+    }
+
+    // Chuỗi gộp để tìm kiếm
+    const searchString = `#${id} ${t} ${info} ${statusText}`.toLowerCase();
+
+    // Nếu không nhập gì, hoặc chuỗi có chứa từ khóa thì mới tạo HTML
+    if (searchTerm === '' || searchString.includes(searchTerm)) {
+      visibleCount++;
+      const expCls = (t==='CLIENT' && Date.now() > (d.end * 1000)) ? 'expired-row' : '';
+      rowsHtml += `<tr class="${expCls}">
+        <td style="font-family:var(--mono);font-size:12px">#${id}</td>
+        <td><span class="tag ${tagCls}">${t}</span></td>
+        <td class="mono">${info}</td>
+        <td>${pill}</td>
+      </tr>`;
+    }
+  });
+
+  // Render ra bảng
+  if (visibleCount === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty">Không tìm thấy kết quả phù hợp…</td></tr>';
+  } else {
+    tbody.innerHTML = rowsHtml;
+  }
+
+  // Cập nhật thống kê (vẫn giữ nguyên tổng số dù có đang tìm kiếm)
+  document.getElementById('total-id').textContent  = keys.length;
+  document.getElementById('id-badge').textContent  = keys.length + ' ID';
+  document.getElementById('cnt-admin').textContent  = cA;
+  document.getElementById('cnt-staff').textContent  = cS;
+  document.getElementById('cnt-client').textContent = cC;
+}
+
+
+// TRẠNG THÁI NÚT XEM LỊCH SỬ
+let isShowingMoreLogs = false;
+
+function toggleLogView() {
+  isShowingMoreLogs = !isShowingMoreLogs;
+  renderLogs(); // Gọi lại hàm render để vẽ lại bảng
+}
+
+let logs = [], lastLogKey = null;
+// Render Logs (HIỂN THỊ 5 / 20)
+function renderLogs() {
+  const tbody = document.getElementById('log-body');
+  if (!logs.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty">Chưa có lịch sử…</td></tr>';
+    document.getElementById('log-badge').textContent = '0 lượt';
+    return;
+  }
+
+  // Lấy mảng đảo ngược (mới nhất lên đầu)
+  let displayLogs = logs.slice().reverse();
+  const totalLogs = displayLogs.length;
+
+  // Giới hạn 5 hoặc 20 tùy vào trạng thái
+  const limit = isShowingMoreLogs ? 20 : 5;
+  displayLogs = displayLogs.slice(0, limit);
+
+  let html = displayLogs.map((l,i) => {
+    const pc = l.status==='success'?'pill-ok':l.status==='warn'?'pill-warn':'pill-fail';
+    const pt = l.status==='success'?'✓ Thành công':l.status==='warn'?'⚠ Cảnh báo':'✗ Thất bại';
+    const tc = l.type==='STAFF'?'tag-staff':l.type==='CLIENT'?'tag-client':'tag-admin';
+    return `<tr class="${i===0 && !isShowingMoreLogs ? 'row-new':''}">
+      <td class="mono">${l.time}</td>
+      <td><span class="tag ${tc}">${l.type}</span></td>
+      <td style="font-family:var(--mono);font-size:12px">#${l.id}</td>
+      <td><span class="pill ${pc}">${pt}</span></td>
+    </tr>`;
+  }).join('');
+
+  // Nếu tổng log lớn hơn 5, chèn thêm 1 dòng làm nút bấm ở cuối bảng
+  if (totalLogs > 5) {
+    const toggleText = isShowingMoreLogs 
+      ? '↑ Thu gọn bớt' 
+      : `↓ Hiện tất cả `;
+      
+    html += `
+      <tr>
+        <td colspan="4" style="padding:0">
+          <div class="toggle-more" onclick="toggleLogView()">${toggleText}</div>
+        </td>
+      </tr>
+    `;
+  }
+
+  tbody.innerHTML = html;
+  document.getElementById('log-badge').textContent = totalLogs + ' lượt';
+}
+
+// Render Logs
+
+
+// Firebase fetch
+async function fetchStatus() {
+  const r = await fetch(`${FIREBASE_URL}/status.json`);
+  const d = await r.json();
+  if (!d) return;
+  if (typeof d.doorOpen === 'boolean') setDoor(d.doorOpen);
+  if (d.rtcBatteryVoltage != null) {
+    const v = parseFloat(d.rtcBatteryVoltage);
+    document.getElementById('rtc-volt').textContent = v.toFixed(2)+'V';
+    document.getElementById('rtc-status').textContent = v<2.5?'⚠ Cần thay pin':v<2.9?'Pin yếu':'Pin tốt';
+  }
+  setConn(true, d.lastSeen||'');
+}
+
+async function fetchIDs() {
+  const r = await fetch(`${FIREBASE_URL}/ids.json`);
+  const d = await r.json();
+  idData = d || {};
+  renderIDs();
+}
+
+async function fetchLogs() {
+  const r = await fetch(`${FIREBASE_URL}/logs.json?orderBy="$key"&limitToLast=100`);
+  const d = await r.json();
+  if (!d) return;
+  const entries = Object.entries(d).sort((a,b)=>a[0].localeCompare(b[0]));
+  if (lastLogKey === null) {
+    logs = entries.map(([,v])=>({time:v.time||'--',type:v.type||'UNKNOWN',id:v.id||0,status:v.status||'fail'}));
+    if (entries.length) lastLogKey = entries[entries.length-1][0];
+    renderLogs(); return;
+  }
+  let hasNew = false;
+  for (const [k,v] of entries) {
+    if (k <= lastLogKey) continue;
+    lastLogKey = k; hasNew = true;
+    logs.push({time:v.time||'--',type:v.type||'UNKNOWN',id:v.id||0,status:v.status||'fail'});
+  }
+  if (hasNew) renderLogs();
+}
+
+async function loop() {
+  try { await Promise.all([fetchStatus(), fetchIDs(), fetchLogs()]); }
+  catch { setConn(false); }
+  setTimeout(loop, 5000);
+}
+
+function openTab(evt, tabId) {
+  // Ẩn tất cả nội dung tab
+  const contents = document.getElementsByClassName("tab-content");
+  for (let i = 0; i < contents.length; i++) {
+    contents[i].classList.remove("active");
+  }
+
+  // Bỏ class active ở tất cả các nút
+  const btns = document.getElementsByClassName("tab-btn");
+  for (let i = 0; i < btns.length; i++) {
+    btns[i].classList.remove("active");
+  }
+
+  // Hiện tab hiện tại và thêm class active vào nút đã bấm
+  document.getElementById(tabId).classList.add("active");
+  evt.currentTarget.classList.add("active");
+}
+
+window.addEventListener('load', () => { renderIDs(); renderLogs(); loop(); feather.replace(); });
+</script>
+</body>
+</html>
