@@ -7,8 +7,8 @@
 #include <ArduinoJson.h>  
 
 
-#define WIFI_SSID     "mkhang"
-#define WIFI_PASSWORD "anhkhangdeptraiquadiahihi"
+#define WIFI_SSID     "P"
+#define WIFI_PASSWORD "12345678"
 #define FIREBASE_URL  "https://doan1-4673b-default-rtdb.asia-southeast1.firebasedatabase.app/"
 
 void initWiFi() {
@@ -33,6 +33,7 @@ static bool firebasePatch(const String& path, const String& json) {
   HTTPClient http;
   String url = String(FIREBASE_URL) + path;
   http.begin(url);
+  http.setTimeout(1500);
   http.addHeader("Content-Type", "application/json");
 
   int code = http.sendRequest("PATCH", json);
@@ -46,6 +47,7 @@ static bool firebasePost(const String& path, const String& json) {
   HTTPClient http;
   String url = String(FIREBASE_URL) + path;
   http.begin(url);
+  http.setTimeout(1500);
   http.addHeader("Content-Type", "application/json");
 
   int code = http.POST(json);
@@ -176,6 +178,7 @@ void deleteIDFromFirebase(uint8_t id) {
   HTTPClient http;
   String url = String(FIREBASE_URL) + "/ids/" + String(id) + ".json";
   http.begin(url);
+  http.setTimeout(1500);
   http.sendRequest("DELETE");
   http.end();
 

@@ -82,7 +82,7 @@ void lcd_CLIENT() {
   lcd.print("START TIME");
 
   lcd.setCursor(0, 1);
-  lcd.print("_ _/_ _  _ _/_ _");
+  lcd.print("_ _/_ _  _ _h_ _");
 }
 
 void lcd_END_TIME() {
@@ -92,17 +92,17 @@ void lcd_END_TIME() {
   lcd.print("END TIME");
 
   lcd.setCursor(0, 1);
-  lcd.print("_ _/_ _  _ _/_ _");
+  lcd.print("_ _/_ _  _ _h_ _");
 }
 
 void lcd_STAFF() {
   lcd.clear();
 
   lcd.setCursor(0, 0);
-  lcd.print("1.Shift1(6h-14h)");
+  lcd.print("1.Shift1(6-14)");
 
   lcd.setCursor(0, 1);
-  lcd.print("2.Shift2(14h-22h)");
+  lcd.print("2.Shift2(14-22)");
 }
 
 void lcd_DELETE() {

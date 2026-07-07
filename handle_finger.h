@@ -1,4 +1,4 @@
-#ifndef HANDLE_FINGERPRINT_H
+    #ifndef HANDLE_FINGERPRINT_H
 #define HANDLE_FINGERPRINT_H
 
 #include "ADD.h" 
@@ -84,7 +84,8 @@ void handleFingerprintUnlock() {
                 } else if (currentSecs > endTime) {
                     Serial.println("Da qua han check-out -> Xoa van tay!");
                     lcd.clear(); lcd.print("EXPIRED!");
-                    deleteFingerprint(id); 
+                    deleteFingerprint(id);
+                    deleteIDFromFirebase(id);
                     sendAccessLog("CLIENT", id, "Het han - Da xoa", "fail");
                     delay(2000);
                 } else {

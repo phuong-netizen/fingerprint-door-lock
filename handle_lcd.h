@@ -1,4 +1,3 @@
-
 int clientTimeIndex = 0;
 char clientTimeInput[17];
 byte deleteIndex = 0;
@@ -250,17 +249,17 @@ void enrollProgress(uint8_t step) {
   lcd.clear();
   lcd.setCursor(0, 0);
   if (step == 1) {
-    lcd.print("DAT VAN TAY L1");
+    lcd.print("PLACE FINGER");
   } else if (step == 2) {
-    lcd.print("NHAC TAY RA...");
+    lcd.print("REMOVE FINGER");
   } else if (step == 3) {
-    lcd.print("DAT LAI VAN TAY");
+    lcd.print("PLACE AGAIN");
   } else if (step == 4) {
-    lcd.print("DANG LUU HO SO..");
+    lcd.print("SAVING DATA ...");
   } else if (step == 5) {
-    lcd.print("KHONG KHOP!");
+    lcd.print("NOT MATCH!");
     lcd.setCursor(0, 1);
-    lcd.print("THU LAI...");
+    lcd.print("TRY AGAIN...");
   }
 }
 
@@ -282,7 +281,7 @@ void handleClient(char key) {
       lcd.setCursor(4, 0); 
       lcd.print("END TIME");                // Đổi tiêu đề dòng trên
       lcd.setCursor(0, 1); 
-      lcd.print("_ _/_ _  _ _/_ _");         // Trải lại dàn dấu '_' ở dòng dưới
+      lcd.print("_ _/_ _  _ _h_ _");         // Trải lại dàn dấu '_' ở dòng dưới
     }
     
     else if (clientTimeIndex == 16) {
@@ -306,7 +305,7 @@ void handleClient(char key) {
 
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("DANG TIM ID...");
+      lcd.print("FINGDING ID...");
       delay(1000);
 
       int newClientID = getNextAvailableID('C'); 
@@ -324,17 +323,17 @@ void handleClient(char key) {
         lcd.clear();
         if (isSuccess) {
           // Báo thành công rực rỡ thật sự
-          lcd.setCursor(0, 0); 
-          lcd.print("DA LUU THANH CONG");
+          lcd.setCursor(2, 0); 
+          lcd.print("SAVE SUCCESS");
           lcd.setCursor(0, 1); 
-          lcd.print("ID KHACH: "); 
+          lcd.print("CLIENT ID: "); 
           lcd.print(newClientID); // In ra ID thực tế vừa được cấp
           sendIDList();
         } else {
           lcd.setCursor(0, 0); 
-          lcd.print("LOI VAN TAY!");
+          lcd.print("FINGER ERROR!");
           lcd.setCursor(0, 1);
-          lcd.print("THU LAI SAU...");
+          lcd.print("TRY AGAIN");
         }
         delay(3000); 
       }
@@ -386,7 +385,7 @@ void handleStaff(char key) {
     // Báo cho Admin biết đang xử lý
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("DANG TIM ID...");
+    lcd.print("FINDING ID...");
     delay(1000);
 
     // Tự động quét xem ID STAFF nào từ 11 - 60 đang trống ('S' = Staff)
@@ -408,8 +407,8 @@ void handleStaff(char key) {
         // ĐIỂM CỐT LÕI: LƯU CA LÀM VIỆC VÀO BỘ NHỚ NGAY LẬP TỨC
         setStaffShift(newStaffID, startH, endH);
 
-        lcd.setCursor(0, 0); 
-        lcd.print("DA LUU THAN CONG");
+        lcd.setCursor(2, 0); 
+        lcd.print("SAVE SUCCESS");
         lcd.setCursor(0, 1); 
         lcd.print("ID STAFF: "); 
         lcd.print(newStaffID); // In ra ID thực tế được cấp (từ 11 - 60)
@@ -451,7 +450,7 @@ void handleDelete(char key) {
 
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("DANG XOA...");
+      lcd.print("DELETING...");
       delay(500);
 
       // Gọi hàm xóa vân tay và các thông tin liên quan (Ca làm / Giờ thuê)
@@ -459,8 +458,8 @@ void handleDelete(char key) {
 
       lcd.clear();
       if (isDeleted) {
-        lcd.setCursor(0, 0);
-        lcd.print("DA XOA THANH CONG");
+        lcd.setCursor(1, 0);
+        lcd.print("DELETE SUCCESS");
         lcd.setCursor(4, 1);
         lcd.print("ID: ");
         lcd.print(idToDelete);
@@ -468,9 +467,9 @@ void handleDelete(char key) {
         sendIDList();
       } else {
         lcd.setCursor(0, 0);
-        lcd.print("XOA THAT BAI!");
+        lcd.print("DELETE FAILED!");
         lcd.setCursor(0, 1);
-        lcd.print("ID KHONG TON TAI");
+        lcd.print("ID INVALID");
       }
       delay(2500);
     }

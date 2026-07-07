@@ -64,6 +64,23 @@ void relay_set(RelayState state) {
     else
       digitalWrite(RELAY, LOW);
 }
+#include "esp_system.h"
+
+void printResetReason() {
+  esp_reset_reason_t reason = esp_reset_reason();
+  Serial.print("[RESET REASON] ");
+  switch (reason) {
+    case ESP_RST_POWERON:   Serial.println("Power-on (cấp nguồn lần đầu)"); break;
+    case ESP_RST_SW:        Serial.println("Software reset (gọi esp_restart/ESP.restart)"); break;
+    case ESP_RST_PANIC:     Serial.println("PANIC - crash phần mềm (lỗi code, exception)"); break;
+    case ESP_RST_INT_WDT:   Serial.println("Interrupt watchdog timeout"); break;
+    case ESP_RST_TASK_WDT:  Serial.println("Task watchdog timeout (code bị treo/block quá lâu)"); break;
+    case ESP_RST_WDT:       Serial.println("Watchdog khác"); break;
+    case ESP_RST_BROWNOUT:  Serial.println("BROWNOUT - SỤT ÁP NGUỒN"); break;
+    case ESP_RST_SDIO:      Serial.println("SDIO reset"); break;
+    default:                Serial.printf("Khác: %d\n", reason); break;
+  }
+}
 #include "lcd.h"
 #include "control_time.h"
 #include "ADD.h"
@@ -80,7 +97,7 @@ unsigned long lastStatusSend = 0;
 
 void setup() {
   Serial.begin(115200);
-
+  printResetReason();
   Wire.begin(); 
   lcd.begin();
   lcd.backlight();

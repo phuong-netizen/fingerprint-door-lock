@@ -525,7 +525,7 @@ function renderIDs() {
           });
         };
   info = `${fmt(d.start)} → ${fmt(d.end)}`;
-  const expired = Date.now() > (d.end * 1000);         // tính trực tiếp
+  const expired = Date.now() > ((d.end - 7 * 3600) * 1000); 
   pill = expired ? `<span class="pill pill-exp">Hết hạn</span>` : `<span class="pill pill-ok">Còn hạn</span>`;
   statusText = expired ? 'het han' : 'con han';
     } else {
